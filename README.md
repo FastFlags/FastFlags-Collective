@@ -5,7 +5,7 @@
 <h6 align="center">https://discord.gg/fastflags</h6>
 
 ##### Version: 6.0.2 [2/16/2024]
-* **101 Currently Listed**
+* **98 Currently Listed**
 * **5 Textures Currently Listed**
 * **(not declared!)**
 
@@ -82,11 +82,6 @@
 ### Disable Shadows
 ```json
 { "FIntRenderShadowIntensity": "0" }
-```
-### Set Fps Limit
-{ "DFIntTaskSchedulerTargetFps": "9999" }
-```json
-{ "DFIntTaskSchedulerTargetFps": "9999" }
 ```
 ### Enables Network Debug Tracker menu
 ##### Instructions: CTRL+F8
