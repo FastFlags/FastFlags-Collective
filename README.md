@@ -1,4 +1,4 @@
-<h1 align="center"><img src="/assets/shopitem.png" width="28"/> setfflag</h1>
+<h1 align="center"><img src="/assets/images/shopitem.png" width="28"/> setfflag</h1>
 
 ## How to Use:
 1. krampus
