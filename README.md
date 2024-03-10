@@ -1,8 +1,13 @@
 <h1 align="center"><img src="/assets/images/shopitem.png" width="28"/> setfflag</h1>
 
 ## How to Use:
-1. krampus
-2. setfflag
+### BUY KRAMPUS FROM [BloxProducts](https://bloxproducts.com/#f0)
+* Instant Delivery
+* Cheapest
+* Purchase with Robux
+* Popular Payment Methods
+
+##### I bought krampus from here. It was instantly delivered to my spam (not even a minute)
 
 <h3 align="center">══════⊹⊱≼≽⊰⊹══════</h3>
 
@@ -172,3 +177,8 @@ setfflag("MaxActiveAnimationTracks", "0")
 ```lua
 setfflag("RemoteEventSingleInvocationSizeLimit", "1")
 ```
+### Show Flag State
+```lua
+setfflag("DebugShowFlagState", "FLAGHERE")
+```
+
