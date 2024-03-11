@@ -1,4 +1,4 @@
-<h1 align="center"><img src="/assets/images/shopitem.png" width="28"/> setfflag</h1>
+<h1 align="center"><img src="https://i.imgur.com/O5jfEFH.png" width="28"/> setfflag</h1>
 
 ## How to Use:
 ### BUY KRAMPUS FROM [BloxProducts](https://bloxproducts.com/#f0)
