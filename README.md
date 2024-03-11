@@ -18,8 +18,8 @@
 * Popular Payment Methods
 
  # List Navigation
-* **[Harmful](https://github.com/FastFlags/FastFlags-Collective/?tab=readme-ov-file#Harmful)**
-* **[Non-Harmful](https://github.com/FastFlags/FastFlags-Collective/?tab=readme-ov-file#)**
+* **[Harmful](https://github.com/FastFlags/FastFlags-Collective/tree/Scripts-Collective?tab=readme-ov-file#harmful)**
+* **[Non-Harmful](https://github.com/FastFlags/FastFlags-Collective/tree/Scripts-Collective?tab=readme-ov-file#non-harmful)**
 
 <img src="assets/images/bitdancer.png" width="888"/>
 
@@ -28,7 +28,7 @@
 <h3 align="center">══════⊹⊱≼≽⊰⊹══════</h3>
 
 
-<h1 align="center">Harmful</h1>
+<h4 align="center">Harmful</h4>
 
 ### Universal: Infinite Yield FE
 ```lua
