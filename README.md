@@ -5,7 +5,7 @@
 <h6 align="center">https://discord.gg/fastflags</h6>
 
 ##### [3/23/2024]
-* **112 Currently Listed**
+* **113 Currently Listed**
 
 ## How to Use:
 1. **Open the [Bloxstrap Menu](https://github.com/pizzaboxer/bloxstrap).**
@@ -63,6 +63,10 @@
 ### Draws a circle under avatars
 ```json
 { "FFlagDebugAvatarChatVisualization": "True", "FFlagEnableInGameMenuChromeABTest2": "False" }
+```
+### Performance Mode
+```json
+{"DFFlagDebugPerfMode": "True"}
 ```
 ### Smoother Terrain
 ```json
