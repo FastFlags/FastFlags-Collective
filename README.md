@@ -185,4 +185,9 @@ setfflag("RemoteEventSingleInvocationSizeLimit", "1")
 ```lua
 setfflag("DebugShowFlagState", "FLAGHERE")
 ```
+### Max zoom distance
+###### only works in some games that haven't changed the roblox default
+```lua
+ setfflag("FIntCameraMaxZoomDistance", "100000000") 
+```
 
